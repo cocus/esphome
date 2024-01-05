@@ -29,6 +29,13 @@ static const uint16_t ATM90E36_REGISTER_ENSTATUS1 = 0x96;      // Metering Statu
 
 
 
+static const uint16_t ATM90E32_REGISTER_URMSA = 0xD9;    // A RMS Voltage
+static const uint16_t ATM90E32_REGISTER_URMSB = 0xDA;    // B RMS Voltage
+static const uint16_t ATM90E32_REGISTER_URMSC = 0xDB;    // C RMS Voltage
+static const uint16_t ATM90E32_REGISTER_IRMSA = 0xDD;    // A RMS Current
+static const uint16_t ATM90E32_REGISTER_IRMSB = 0xDE;    // B RMS Current
+static const uint16_t ATM90E32_REGISTER_IRMSC = 0xDF;    // C RMS Current
+
 
 
 

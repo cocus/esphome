@@ -212,22 +212,28 @@ void ATM90E36Component::write16_(uint16_t a_register, uint16_t val) {
 }
 
 float ATM90E36Component::get_line_voltage_a_() {
-  return 0.0f;
+  uint16_t voltage = this->read16_(ATM90E32_REGISTER_URMSA);
+  return (float) voltage / 100;
 }
 float ATM90E36Component::get_line_voltage_b_() {
-  return 0.0f;
+  uint16_t voltage = this->read16_(ATM90E32_REGISTER_URMSB);
+  return (float) voltage / 100;
 }
 float ATM90E36Component::get_line_voltage_c_() {
-  return 0.0f;
+  uint16_t voltage = this->read16_(ATM90E32_REGISTER_URMSC);
+  return (float) voltage / 100;
 }
 float ATM90E36Component::get_line_current_a_() {
-  return 0.0f;
+  uint16_t current = this->read16_(ATM90E32_REGISTER_IRMSA);
+  return (float) current / 1000;
 }
 float ATM90E36Component::get_line_current_b_() {
-  return 0.0f;
+  uint16_t current = this->read16_(ATM90E32_REGISTER_IRMSB);
+  return (float) current / 1000;
 }
 float ATM90E36Component::get_line_current_c_() {
-  return 0.0f;
+  uint16_t current = this->read16_(ATM90E32_REGISTER_IRMSC);
+  return (float) current / 1000;
 }
 float ATM90E36Component::get_active_power_a_() {
   return 0.0f;

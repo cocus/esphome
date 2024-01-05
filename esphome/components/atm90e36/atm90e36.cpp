@@ -9,6 +9,10 @@ namespace atm90e36 {
 static const char *const TAG = "atm90e36";
 
 void ATM90E36Component::update() {
+  if (this->chip_temperature_sensor_ != nullptr) {
+    this->chip_temperature_sensor_->publish_state(this->get_chip_temperature_());
+  }
+
   if (this->read16_(ATM90E36_REGISTER_METEREN) != 1) {
     this->status_set_warning();
     return;
@@ -80,9 +84,7 @@ void ATM90E36Component::update() {
   if (this->freq_sensor_ != nullptr) {
     this->freq_sensor_->publish_state(this->get_frequency_());
   }
-  if (this->chip_temperature_sensor_ != nullptr) {
-    this->chip_temperature_sensor_->publish_state(this->get_chip_temperature_());
-  }
+
   this->status_clear_warning();
 }
 

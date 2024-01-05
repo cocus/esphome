@@ -12,12 +12,6 @@ void ATM90E36Component::update() {
   if (this->chip_temperature_sensor_ != nullptr) {
     this->chip_temperature_sensor_->publish_state(this->get_chip_temperature_());
   }
-
-  if (this->read16_(ATM90E36_REGISTER_METEREN) != 1) {
-    this->status_set_warning();
-    return;
-  }
-
   if (this->phase_[0].voltage_sensor_ != nullptr) {
     this->phase_[0].voltage_sensor_->publish_state(this->get_line_voltage_a_());
   }
@@ -84,6 +78,8 @@ void ATM90E36Component::update() {
   if (this->freq_sensor_ != nullptr) {
     this->freq_sensor_->publish_state(this->get_frequency_());
   }
+
+  ESP_LOGD(TAG, "EnStatus1 = %04x", this->read16_(ATM90E36_REGISTER_ENSTATUS1) );
 
   this->status_clear_warning();
 }

@@ -5,8 +5,10 @@ namespace atm90e36 {
 
 
 /* STATUS REGISTERS */
-static const uint16_t ATM90E36_REGISTER_METEREN = 0x00;        // Metering Enable
-static const uint16_t ATM90E36_REGISTER_CHANNELMAPI = 0x01;    // Current Channel Mapping Configuration
+static const uint16_t ATM90E36_REGISTER_SOFTRESET = 0x00;       // Software Reset
+static const uint16_t ATM90E36_REGISTER_SYSSTATUS0 = 0x01;     // System Status 0
+static const uint16_t ATM90E36_REGISTER_SYSSTATUS1 = 0x02;     // System Status 1
+
 static const uint16_t ATM90E36_REGISTER_CHANNELMAPU = 0x02;    // Voltage Channel Mapping Configuration
 static const uint16_t ATM90E36_REGISTER_SAGPEAKDETCFG = 0x05;  // Sag and Peak Detector Period Configuration
 static const uint16_t ATM90E36_REGISTER_OVTH = 0x06;           // Over Voltage Threshold
@@ -20,9 +22,17 @@ static const uint16_t ATM90E36_REGISTER_FREQHITH = 0x0D;       // High Threshold
 static const uint16_t ATM90E36_REGISTER_PMPWRCTRL = 0x0E;      // Partial Measurement Mode Power Control
 static const uint16_t ATM90E36_REGISTER_IRQ0MERGECFG = 0x0F;   // IRQ0 Merge Configuration
 
+
+static const uint16_t ATM90E36_REGISTER_ENSTATUS0 = 0x95;      // Metering Status 0
+static const uint16_t ATM90E36_REGISTER_ENSTATUS1 = 0x96;      // Metering Status 1
+
+
+
+
+
+
+
 /* EMM STATUS REGISTERS */
-static const uint16_t ATM90E36_REGISTER_SOFTRESET = 0x00;       // Software Reset
-static const uint16_t ATM90E36_REGISTER_CONFIGSTART = 0x30;     // Configuration Start
 
 #if 0
 static const uint16_t ATM90E36_REGISTER_EMMSTATE0 = 0x71;       // EMM State 0
@@ -87,6 +97,7 @@ static const uint16_t ATM90E36_REGISTER_PMIRMSLSB = 0x1D;
 #endif
 
 /* CONFIGURATION REGISTERS */
+static const uint16_t ATM90E36_REGISTER_CONFIGSTART = 0x30;     // Configuration Start
 static const uint16_t ATM90E36_REGISTER_PLCONSTH = 0x31;  // High Word of PL_Constant
 static const uint16_t ATM90E36_REGISTER_PLCONSTL = 0x32;  // Low Word of PL_Constant
 static const uint16_t ATM90E36_REGISTER_MMODE0 = 0x33;    // Metering Mode Config

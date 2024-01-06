@@ -79,7 +79,7 @@ void ATM90E36Component::update() {
     this->freq_sensor_->publish_state(this->get_frequency_());
   }
 
-  ESP_LOGD(TAG, "EnStatus1 = %04x", this->read16_(ATM90E36_REGISTER_ENSTATUS1) );
+  ESP_LOGD(TAG, "EnStatus1 = %04x, voltA: %d currA: %d", this->read16_(ATM90E36_REGISTER_ENSTATUS1), this->read16_(ATM90E32_REGISTER_URMSA), this->read16_(ATM90E32_REGISTER_IRMSA) );
 
   this->status_clear_warning();
 }

@@ -37,6 +37,22 @@ static const uint16_t ATM90E32_REGISTER_IRMSB = 0xDE;    // B RMS Current
 static const uint16_t ATM90E32_REGISTER_IRMSC = 0xDF;    // C RMS Current
 
 
+/* MEASUREMENT CALIBRATION REGISTERS */
+static const uint16_t ATM90E36_REGISTER_ADJSTART = 0x60;  // Measurement Cal Start
+static const uint16_t ATM90E36_REGISTER_UGAINA = 0x61;    // A Voltage RMS Gain
+static const uint16_t ATM90E36_REGISTER_IGAINA = 0x62;    // A Current RMS Gain
+static const uint16_t ATM90E36_REGISTER_UOFFSETA = 0x63;  // A Voltage Offset
+static const uint16_t ATM90E36_REGISTER_IOFFSETA = 0x64;  // A Current Offset
+static const uint16_t ATM90E36_REGISTER_UGAINB = 0x65;    // B Voltage RMS Gain
+static const uint16_t ATM90E36_REGISTER_IGAINB = 0x66;    // B Current RMS Gain
+static const uint16_t ATM90E36_REGISTER_UOFFSETB = 0x67;  // B Voltage Offset
+static const uint16_t ATM90E36_REGISTER_IOFFSETB = 0x68;  // B Current Offset
+static const uint16_t ATM90E36_REGISTER_UGAINC = 0x69;    // C Voltage RMS Gain
+static const uint16_t ATM90E36_REGISTER_IGAINC = 0x6A;    // C Current RMS Gain
+static const uint16_t ATM90E36_REGISTER_UOFFSETC = 0x6B;  // C Voltage Offset
+static const uint16_t ATM90E36_REGISTER_IOFFSETC = 0x6C;  // C Current Offset
+
+static const uint16_t ATM90E36_REGISTER_CSTHREE = 0x6F;   // Checksum 3
 
 
 /* EMM STATUS REGISTERS */
@@ -142,19 +158,6 @@ static const uint16_t ATM90E36_REGISTER_PGAINAF = 0x54;    // A Fund Power Gain 
 static const uint16_t ATM90E36_REGISTER_PGAINBF = 0x55;    // B Fund Power Gain (P)
 static const uint16_t ATM90E36_REGISTER_PGAINCF = 0x56;    // C Fund Power Gain (P)
 
-/* MEASUREMENT CALIBRATION REGISTERS */
-static const uint16_t ATM90E36_REGISTER_UGAINA = 0x61;    // A Voltage RMS Gain
-static const uint16_t ATM90E36_REGISTER_IGAINA = 0x62;    // A Current RMS Gain
-static const uint16_t ATM90E36_REGISTER_UOFFSETA = 0x63;  // A Voltage Offset
-static const uint16_t ATM90E36_REGISTER_IOFFSETA = 0x64;  // A Current Offset
-static const uint16_t ATM90E36_REGISTER_UGAINB = 0x65;    // B Voltage RMS Gain
-static const uint16_t ATM90E36_REGISTER_IGAINB = 0x66;    // B Current RMS Gain
-static const uint16_t ATM90E36_REGISTER_UOFFSETB = 0x67;  // B Voltage Offset
-static const uint16_t ATM90E36_REGISTER_IOFFSETB = 0x68;  // B Current Offset
-static const uint16_t ATM90E36_REGISTER_UGAINC = 0x69;    // C Voltage RMS Gain
-static const uint16_t ATM90E36_REGISTER_IGAINC = 0x6A;    // C Current RMS Gain
-static const uint16_t ATM90E36_REGISTER_UOFFSETC = 0x6B;  // C Voltage Offset
-static const uint16_t ATM90E36_REGISTER_IOFFSETC = 0x6C;  // C Current Offset
 static const uint16_t ATM90E36_REGISTER_IOFFSETN = 0x6E;  // N Current Offset
 
 /* ENERGY REGISTERS */

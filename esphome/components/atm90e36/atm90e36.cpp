@@ -118,16 +118,27 @@ void ATM90E36Component::setup() {
   this->write16_(ATM90E36_REGISTER_QSTARTTH, 0x1D4C);   // All Reactive Startup Power Threshold - 50%
   this->write16_(ATM90E36_REGISTER_PPHASETH, 0x02EE);   // Each Phase Active Phase Threshold - 0.002A/0.00032 = 750
   this->write16_(ATM90E36_REGISTER_QPHASETH, 0x02EE);   // Each phase Reactive Phase Threshold - 10%
-/*
+  this->write16_(ATM90E36_REGISTER_CSZERO, 0x4741);      // Checksum 0
+
+
+
+
+  this->write16_(ATM90E36_REGISTER_ADJSTART, 0x5678); // Measurement calibration
   this->write16_(ATM90E36_REGISTER_UGAINA, this->phase_[0].volt_gain_);  // A Voltage rms gain
   this->write16_(ATM90E36_REGISTER_IGAINA, this->phase_[0].ct_gain_);    // A line current gain
   this->write16_(ATM90E36_REGISTER_UGAINB, this->phase_[1].volt_gain_);  // B Voltage rms gain
   this->write16_(ATM90E36_REGISTER_IGAINB, this->phase_[1].ct_gain_);    // B line current gain
   this->write16_(ATM90E36_REGISTER_UGAINC, this->phase_[2].volt_gain_);  // C Voltage rms gain
   this->write16_(ATM90E36_REGISTER_IGAINC, this->phase_[2].ct_gain_);    // C line current gain
+  // N
+  //CommEnergyIC(WRITE, IgainN, 0xFD7F); // D line current gain
+  this->write16_(ATM90E36_REGISTER_CSTHREE, 0x02F6); // Checksum 3
+
+/*
+  
   this->write16_(ATM90E36_REGISTER_CFGREGACCEN, 0x0000);                 // end configuration*/
 
-  this->write16_(ATM90E36_REGISTER_CSZERO, 0x4741);      // Checksum 0
+
 
 }
 

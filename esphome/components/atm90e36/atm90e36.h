@@ -82,7 +82,7 @@ class ATM90E36Component : public PollingComponent,
   } phase_[3];
   sensor::Sensor *freq_sensor_{nullptr};
   sensor::Sensor *chip_temperature_sensor_{nullptr};
-  uint16_t pga_gain_{0x15};
+  uint16_t pga_gain_{0x0};
   int line_freq_{60};
   int current_phases_{3};
 };

@@ -109,11 +109,21 @@ void ATM90E36Component::setup() {
     return;
   }*/
 
+  uint16_t mmode1 = 0;
+  mmode1 |= pga_gain_ << 0; // I1
+  mmode1 |= pga_gain_ << 2; // I2
+  mmode1 |= pga_gain_ << 4; // I3
+  mmode1 |= pga_gain_ << 6; // I4
+
+  mmode1 |= pga_gain_ << 8; // V1
+  mmode1 |= pga_gain_ << 10; // V2
+  mmode1 |= pga_gain_ << 12; // V3
+
   this->write16_(ATM90E36_REGISTER_PLCONSTH, 0x0861);   // PL Constant MSB (default) = 140625000
   this->write16_(ATM90E36_REGISTER_PLCONSTL, 0xC468);   // PL Constant LSB (default)
   this->write16_(ATM90E36_REGISTER_ZXCONFIG, 0xD654);   // ZX2, ZX1, ZX0 pin config
   this->write16_(ATM90E36_REGISTER_MMODE0, mmode0);     // Mode Config (frequency set in main program)
-  this->write16_(ATM90E36_REGISTER_MMODE1, pga_gain_);  // PGA Gain Configuration for Current Channels
+  this->write16_(ATM90E36_REGISTER_MMODE1, mmode1);     // PGA Gain Configuration for Current Channels
   this->write16_(ATM90E36_REGISTER_PSTARTTH, 0x1D4C);   // All Active Startup Power Threshold - 0.02A/0.00032 = 7500
   this->write16_(ATM90E36_REGISTER_QSTARTTH, 0x1D4C);   // All Reactive Startup Power Threshold - 50%
   this->write16_(ATM90E36_REGISTER_PPHASETH, 0x02EE);   // Each Phase Active Phase Threshold - 0.002A/0.00032 = 750

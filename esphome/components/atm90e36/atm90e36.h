@@ -30,13 +30,15 @@ class ATM90E36Component : public PollingComponent,
   void set_volt_gain(int phase, uint16_t gain) { this->phase_[phase].volt_gain_ = gain; }
   void set_ct_gain(int phase, uint16_t gain) { this->phase_[phase].ct_gain_ = gain; }
 
+  void set_pga_gain_voltage(int phase, uint16_t gain) { this->phase_[phase].volt_pga_gain_ = gain; }
+  void set_pga_gain_current(int phase, uint16_t gain) { this->phase_[phase].current_pga_gain_ = gain; }
+
   void set_freq_sensor(sensor::Sensor *freq_sensor) { freq_sensor_ = freq_sensor; }
   void set_chip_temperature_sensor(sensor::Sensor *chip_temperature_sensor) {
     chip_temperature_sensor_ = chip_temperature_sensor;
   }
   void set_line_freq(int freq) { line_freq_ = freq; }
   void set_current_phases(int phases) { current_phases_ = phases; }
-  void set_pga_gain(uint16_t gain) { pga_gain_ = gain; }
 
  protected:
   uint16_t read16_(uint16_t a_register);
@@ -70,6 +72,10 @@ class ATM90E36Component : public PollingComponent,
   struct ATM90E36Phase {
     uint16_t volt_gain_{7305};
     uint16_t ct_gain_{27961};
+
+    uint16_t volt_pga_gain_{0x0};
+    uint16_t current_pga_gain_{0x0};
+
     sensor::Sensor *voltage_sensor_{nullptr};
     sensor::Sensor *current_sensor_{nullptr};
     sensor::Sensor *power_sensor_{nullptr};
@@ -79,10 +85,9 @@ class ATM90E36Component : public PollingComponent,
     sensor::Sensor *reverse_active_energy_sensor_{nullptr};
     uint32_t cumulative_forward_active_energy_{0};
     uint32_t cumulative_reverse_active_energy_{0};
-  } phase_[3];
+  } phase_[4];
   sensor::Sensor *freq_sensor_{nullptr};
   sensor::Sensor *chip_temperature_sensor_{nullptr};
-  uint16_t pga_gain_{0x0};
   int line_freq_{60};
   int current_phases_{3};
 };

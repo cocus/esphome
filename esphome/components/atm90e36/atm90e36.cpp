@@ -79,7 +79,7 @@ void ATM90E36Component::update() {
     this->freq_sensor_->publish_state(this->get_frequency_());
   }
 
-  ESP_LOGD(TAG, "EnStatus1 = %04x, voltA: %d currA: %d", this->read16_(ATM90E36_REGISTER_ENSTATUS1), this->read16_(ATM90E32_REGISTER_URMSA), this->read16_(ATM90E32_REGISTER_IRMSA) );
+  ESP_LOGD(TAG, "EnStatus1 = %04x, voltA: %d currA: %d", this->read16_(ATM90E36_REGISTER_ENSTATUS1), this->read16_(ATM90E36_REGISTER_URMSA), this->read16_(ATM90E36_REGISTER_IRMSA) );
 
   this->status_clear_warning();
 }
@@ -110,14 +110,14 @@ void ATM90E36Component::setup() {
   }*/
 
   uint16_t mmode1 = 0;
-  mmode1 |= pga_gain_ << 0; // I1
-  mmode1 |= pga_gain_ << 2; // I2
-  mmode1 |= pga_gain_ << 4; // I3
-  mmode1 |= pga_gain_ << 6; // I4
+  mmode1 |= this->phase_[0].current_pga_gain_ << 0; // I1
+  mmode1 |= this->phase_[1].current_pga_gain_ << 2; // I2
+  mmode1 |= this->phase_[2].current_pga_gain_ << 4; // I3
+  mmode1 |= this->phase_[3].current_pga_gain_ << 6; // I4
 
-  mmode1 |= pga_gain_ << 8; // V1
-  mmode1 |= pga_gain_ << 10; // V2
-  mmode1 |= pga_gain_ << 12; // V3
+  mmode1 |= this->phase_[0].volt_pga_gain_ << 8; // V1
+  mmode1 |= this->phase_[1].volt_pga_gain_ << 10; // V2
+  mmode1 |= this->phase_[2].volt_pga_gain_ << 12; // V3
 
   this->write16_(ATM90E36_REGISTER_PLCONSTH, 0x0861);   // PL Constant MSB (default) = 140625000
   this->write16_(ATM90E36_REGISTER_PLCONSTL, 0xC468);   // PL Constant LSB (default)
@@ -131,8 +131,6 @@ void ATM90E36Component::setup() {
   this->write16_(ATM90E36_REGISTER_CSZERO, 0x4741);      // Checksum 0
 
 
-
-
   this->write16_(ATM90E36_REGISTER_ADJSTART, 0x5678); // Measurement calibration
   this->write16_(ATM90E36_REGISTER_UGAINA, this->phase_[0].volt_gain_);  // A Voltage rms gain
   this->write16_(ATM90E36_REGISTER_IGAINA, this->phase_[0].ct_gain_);    // A line current gain
@@ -143,13 +141,6 @@ void ATM90E36Component::setup() {
   // N
   //CommEnergyIC(WRITE, IgainN, 0xFD7F); // D line current gain
   this->write16_(ATM90E36_REGISTER_CSTHREE, 0x02F6); // Checksum 3
-
-/*
-  
-  this->write16_(ATM90E36_REGISTER_CFGREGACCEN, 0x0000);                 // end configuration*/
-
-
-
 }
 
 void ATM90E36Component::dump_config() {
@@ -233,46 +224,52 @@ void ATM90E36Component::write16_(uint16_t a_register, uint16_t val) {
 }
 
 float ATM90E36Component::get_line_voltage_a_() {
-  uint16_t voltage = this->read16_(ATM90E32_REGISTER_URMSA);
+  int voltage = this->read32_(ATM90E36_REGISTER_URMSA);
   return (float) voltage / 100;
 }
 float ATM90E36Component::get_line_voltage_b_() {
-  uint16_t voltage = this->read16_(ATM90E32_REGISTER_URMSB);
+  int voltage = this->read16_(ATM90E36_REGISTER_URMSB);
   return (float) voltage / 100;
 }
 float ATM90E36Component::get_line_voltage_c_() {
-  uint16_t voltage = this->read16_(ATM90E32_REGISTER_URMSC);
+  int voltage = this->read16_(ATM90E36_REGISTER_URMSC);
   return (float) voltage / 100;
 }
 float ATM90E36Component::get_line_current_a_() {
-  uint16_t current = this->read16_(ATM90E32_REGISTER_IRMSA);
+  int current = this->read16_(ATM90E36_REGISTER_IRMSA);
   return (float) current / 1000;
 }
 float ATM90E36Component::get_line_current_b_() {
-  uint16_t current = this->read16_(ATM90E32_REGISTER_IRMSB);
+  int current = this->read16_(ATM90E36_REGISTER_IRMSB);
   return (float) current / 1000;
 }
 float ATM90E36Component::get_line_current_c_() {
-  uint16_t current = this->read16_(ATM90E32_REGISTER_IRMSC);
+  int current = this->read16_(ATM90E36_REGISTER_IRMSC);
   return (float) current / 1000;
 }
 float ATM90E36Component::get_active_power_a_() {
-  return 0.0f;
+  int val = this->read32_(ATM90E36_REGISTER_PMEANA, ATM90E36_REGISTER_PMEANALSB);
+  return val * 0.00032f;
 }
 float ATM90E36Component::get_active_power_b_() {
-  return 0.0f;
+  int val = this->read32_(ATM90E36_REGISTER_PMEANB, ATM90E36_REGISTER_PMEANBLSB);
+  return val * 0.00032f;
 }
 float ATM90E36Component::get_active_power_c_() {
-  return 0.0f;
+  int val = this->read32_(ATM90E36_REGISTER_PMEANC, ATM90E36_REGISTER_PMEANCLSB);
+  return val * 0.00032f;
 }
 float ATM90E36Component::get_reactive_power_a_() {
-  return 0.0f;
+  int val = this->read32_(ATM90E36_REGISTER_QMEANA, ATM90E36_REGISTER_QMEANALSB);
+  return val * 0.00032f;
 }
 float ATM90E36Component::get_reactive_power_b_() {
-  return 0.0f;
+  int val = this->read32_(ATM90E36_REGISTER_QMEANB, ATM90E36_REGISTER_QMEANBLSB);
+  return val * 0.00032f;
 }
 float ATM90E36Component::get_reactive_power_c_() {
-  return 0.0f;
+  int val = this->read32_(ATM90E36_REGISTER_QMEANC, ATM90E36_REGISTER_QMEANCLSB);
+  return val * 0.00032f;
 }
 float ATM90E36Component::get_power_factor_a_() {
   return 0.0f;

@@ -36,7 +36,8 @@ from esphome.const import (
 
 CONF_LINE_FREQUENCY = "line_frequency"
 CONF_CHIP_TEMPERATURE = "chip_temperature"
-CONF_GAIN_PGA = "gain_pga"
+CONF_CURRENT_PGA = "pga_curr"
+CONF_VOLTAGE_PGA = "pga_volt"
 CONF_CURRENT_PHASES = "current_phases"
 CONF_GAIN_VOLTAGE = "gain_voltage"
 CONF_GAIN_CT = "gain_ct"
@@ -49,9 +50,9 @@ CURRENT_PHASES = {
     "3": 3,
 }
 PGA_GAINS = {
-    "1X": 0x0,
-    "2X": 0x15,
-    "4X": 0x2A,
+    "1X": 0x00,
+    "2X": 0x01,
+    "4X": 0x02,
 }
 
 atm90e32_ns = cg.esphome_ns.namespace("atm90e36")
@@ -104,6 +105,8 @@ ATM90E32_PHASE_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_GAIN_VOLTAGE, default=7305): cv.uint16_t,
         cv.Optional(CONF_GAIN_CT, default=27961): cv.uint16_t,
+        cv.Optional(CONF_CURRENT_PGA, default="2X"): cv.enum(PGA_GAINS, upper=True),
+        cv.Optional(CONF_VOLTAGE_PGA, default="2X"): cv.enum(PGA_GAINS, upper=True),
     }
 )
 
@@ -131,7 +134,6 @@ CONFIG_SCHEMA = (
             cv.Optional(CONF_CURRENT_PHASES, default="3"): cv.enum(
                 CURRENT_PHASES, upper=True
             ),
-            cv.Optional(CONF_GAIN_PGA, default="2X"): cv.enum(PGA_GAINS, upper=True),
         }
     )
     .extend(cv.polling_component_schema("60s"))
@@ -150,6 +152,8 @@ async def to_code(config):
         conf = config[phase]
         cg.add(var.set_volt_gain(i, conf[CONF_GAIN_VOLTAGE]))
         cg.add(var.set_ct_gain(i, conf[CONF_GAIN_CT]))
+        cg.add(var.set_pga_gain_current(i, conf[CONF_CURRENT_PGA]))
+        cg.add(var.set_pga_gain_voltage(i, conf[CONF_VOLTAGE_PGA]))
         if voltage_config := conf.get(CONF_VOLTAGE):
             sens = await sensor.new_sensor(voltage_config)
             cg.add(var.set_voltage_sensor(i, sens))
@@ -181,4 +185,3 @@ async def to_code(config):
 
     cg.add(var.set_line_freq(config[CONF_LINE_FREQUENCY]))
     cg.add(var.set_current_phases(config[CONF_CURRENT_PHASES]))
-    cg.add(var.set_pga_gain(config[CONF_GAIN_PGA]))

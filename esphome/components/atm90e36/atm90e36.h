@@ -43,6 +43,8 @@ class ATM90E36Component : public PollingComponent,
  protected:
   uint16_t read16_(uint16_t a_register);
   int read32_(uint16_t addr_h, uint16_t addr_l);
+  float read32_float_(uint16_t addr_h, uint16_t , float k = 256.0f);
+
   void write16_(uint16_t a_register, uint16_t val);
 
   float get_line_voltage_a_();

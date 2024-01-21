@@ -208,6 +208,21 @@ int ATM90E36Component::read32_(uint16_t addr_h, uint16_t addr_l) {
   return val;
 }
 
+float ATM90E36Component::read32_float_(uint16_t addr_h, uint16_t addr_l, float k) {
+  uint16_t val_h = this->read16_(addr_h);
+  uint16_t val_l = this->read16_(addr_l);
+  float result = val_l;
+  result /= k;
+  result += val_h;
+
+  ESP_LOGVV(TAG,
+            "read32_float_ addr_h 0x%04" PRIX16 " val_h 0x%04" PRIX16 " addr_l 0x%04" PRIX16 " val_l 0x%04" PRIX16
+            " = %f",
+            addr_h, val_h, addr_l, val_l, result);
+
+  return result;
+}
+
 void ATM90E36Component::write16_(uint16_t a_register, uint16_t val) {
   uint8_t addrh = (a_register >> 8) & 0x03;
   uint8_t addrl = (a_register & 0xFF);
@@ -224,52 +239,52 @@ void ATM90E36Component::write16_(uint16_t a_register, uint16_t val) {
 }
 
 float ATM90E36Component::get_line_voltage_a_() {
-  int voltage = this->read32_(ATM90E36_REGISTER_URMSA, ATM90E36_REGISTER_URMSALSB);
+  float voltage = this->read32_float_(ATM90E36_REGISTER_URMSA, ATM90E36_REGISTER_URMSALSB);
   return (float) voltage / 100;
 }
 float ATM90E36Component::get_line_voltage_b_() {
-  int voltage = this->read32_(ATM90E36_REGISTER_URMSB, ATM90E36_REGISTER_URMSBLSB);
+  float voltage = this->read32_float_(ATM90E36_REGISTER_URMSB, ATM90E36_REGISTER_URMSBLSB);
   return (float) voltage / 100;
 }
 float ATM90E36Component::get_line_voltage_c_() {
-  int voltage = this->read32_(ATM90E36_REGISTER_URMSC, ATM90E36_REGISTER_URMSCLSB);
+  float voltage = this->read32_float_(ATM90E36_REGISTER_URMSC, ATM90E36_REGISTER_URMSCLSB);
   return (float) voltage / 100;
 }
 float ATM90E36Component::get_line_current_a_() {
-  int current = this->read32_(ATM90E36_REGISTER_IRMSA, ATM90E36_REGISTER_IRMSALSB);
+  float current = this->read32_float_(ATM90E36_REGISTER_IRMSA, ATM90E36_REGISTER_IRMSALSB);
   return (float) current / 1000;
 }
 float ATM90E36Component::get_line_current_b_() {
-  int current = this->read32_(ATM90E36_REGISTER_IRMSB, ATM90E36_REGISTER_IRMSBLSB);
+  float current = this->read32_float_(ATM90E36_REGISTER_IRMSB, ATM90E36_REGISTER_IRMSBLSB);
   return (float) current / 1000;
 }
 float ATM90E36Component::get_line_current_c_() {
-  int current = this->read32_(ATM90E36_REGISTER_IRMSC, ATM90E36_REGISTER_IRMSCLSB);
+  float current = this->read32_float_(ATM90E36_REGISTER_IRMSC, ATM90E36_REGISTER_IRMSCLSB);
   return (float) current / 1000;
 }
 float ATM90E36Component::get_active_power_a_() {
-  int val = this->read32_(ATM90E36_REGISTER_PMEANA, ATM90E36_REGISTER_PMEANALSB);
-  return val * 0.00032f;
+  float val = this->read32_float_(ATM90E36_REGISTER_PMEANA, ATM90E36_REGISTER_PMEANALSB);
+  return val;
 }
 float ATM90E36Component::get_active_power_b_() {
-  int val = this->read32_(ATM90E36_REGISTER_PMEANB, ATM90E36_REGISTER_PMEANBLSB);
-  return val * 0.00032f;
+  float val = this->read32_float_(ATM90E36_REGISTER_PMEANB, ATM90E36_REGISTER_PMEANBLSB);
+  return val;
 }
 float ATM90E36Component::get_active_power_c_() {
-  int val = this->read32_(ATM90E36_REGISTER_PMEANC, ATM90E36_REGISTER_PMEANCLSB);
-  return val * 0.00032f;
+  float val = this->read32_float_(ATM90E36_REGISTER_PMEANC, ATM90E36_REGISTER_PMEANCLSB);
+  return val;
 }
 float ATM90E36Component::get_reactive_power_a_() {
-  int val = this->read32_(ATM90E36_REGISTER_QMEANA, ATM90E36_REGISTER_QMEANALSB);
-  return val * 0.00032f;
+  float val = this->read32_float_(ATM90E36_REGISTER_QMEANA, ATM90E36_REGISTER_QMEANALSB);
+  return val;
 }
 float ATM90E36Component::get_reactive_power_b_() {
-  int val = this->read32_(ATM90E36_REGISTER_QMEANB, ATM90E36_REGISTER_QMEANBLSB);
-  return val * 0.00032f;
+  float val = this->read32_float_(ATM90E36_REGISTER_QMEANB, ATM90E36_REGISTER_QMEANBLSB);
+  return val;
 }
 float ATM90E36Component::get_reactive_power_c_() {
-  int val = this->read32_(ATM90E36_REGISTER_QMEANC, ATM90E36_REGISTER_QMEANCLSB);
-  return val * 0.00032f;
+  float val = this->read32_float_(ATM90E36_REGISTER_QMEANC, ATM90E36_REGISTER_QMEANCLSB);
+  return val;
 }
 float ATM90E36Component::get_power_factor_a_() {
   int16_t pf = this->read16_(ATM90E36_REGISTER_PFMEANA);

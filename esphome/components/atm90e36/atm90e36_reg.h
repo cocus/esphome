@@ -35,6 +35,13 @@ static const uint16_t ATM90E36_REGISTER_URMSC = 0xDB;    // C RMS Voltage
 static const uint16_t ATM90E36_REGISTER_IRMSA = 0xDD;    // A RMS Current
 static const uint16_t ATM90E36_REGISTER_IRMSB = 0xDE;    // B RMS Current
 static const uint16_t ATM90E36_REGISTER_IRMSC = 0xDF;    // C RMS Current
+static const uint16_t ATM90E36_REGISTER_URMSALSB = 0xE9;    // A RMS Voltage LSB
+static const uint16_t ATM90E36_REGISTER_URMSBLSB = 0xEA;    // B RMS Voltage LSB
+static const uint16_t ATM90E36_REGISTER_URMSCLSB = 0xEB;    // C RMS Voltage LSB
+static const uint16_t ATM90E36_REGISTER_IRMSALSB = 0xED;    // A RMS Current LSB
+static const uint16_t ATM90E36_REGISTER_IRMSBLSB = 0xEE;    // B RMS Current LSB
+static const uint16_t ATM90E36_REGISTER_IRMSCLSB = 0xEF;    // C RMS Current LSB
+
 
 
 /* MEASUREMENT CALIBRATION REGISTERS */
@@ -192,6 +199,7 @@ static const uint16_t ATM90E36_REGISTER_PGAINBF = 0x55;    // B Fund Power Gain 
 static const uint16_t ATM90E36_REGISTER_PGAINCF = 0x56;    // C Fund Power Gain (P)
 
 static const uint16_t ATM90E36_REGISTER_IOFFSETN = 0x6E;  // N Current Offset
+#endif
 
 /* ENERGY REGISTERS */
 static const uint16_t ATM90E36_REGISTER_APENERGYT = 0x80;  // Total Forward Active
@@ -210,12 +218,12 @@ static const uint16_t ATM90E36_REGISTER_RNENERGYT = 0x8C;  // Total Reverse Reac
 static const uint16_t ATM90E36_REGISTER_RNENERGYA = 0x8D;  // A Reverse Reactive
 static const uint16_t ATM90E36_REGISTER_RNENERGYB = 0x8E;  // B Reverse Reactive
 static const uint16_t ATM90E36_REGISTER_RNENERGYC = 0x8F;  // C Reverse Reactive
-
 static const uint16_t ATM90E36_REGISTER_SAENERGYT = 0x90;  // Total Apparent Energy
 static const uint16_t ATM90E36_REGISTER_SENERGYA = 0x91;   // A Apparent Energy
 static const uint16_t ATM90E36_REGISTER_SENERGYB = 0x92;   // B Apparent Energy
 static const uint16_t ATM90E36_REGISTER_SENERGYC = 0x93;   // C Apparent Energy
 
+#if 0
 /* FUNDAMENTAL / HARMONIC ENERGY REGISTERS */
 static const uint16_t ATM90E36_REGISTER_APENERGYTF = 0xA0;  // Total Forward Fund. Energy
 static const uint16_t ATM90E36_REGISTER_APENERGYAF = 0xA1;  // A Forward Fund. Energy

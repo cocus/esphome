@@ -224,27 +224,27 @@ void ATM90E36Component::write16_(uint16_t a_register, uint16_t val) {
 }
 
 float ATM90E36Component::get_line_voltage_a_() {
-  int voltage = this->read32_(ATM90E36_REGISTER_URMSA);
+  int voltage = this->read32_(ATM90E36_REGISTER_URMSA, ATM90E36_REGISTER_URMSALSB);
   return (float) voltage / 100;
 }
 float ATM90E36Component::get_line_voltage_b_() {
-  int voltage = this->read16_(ATM90E36_REGISTER_URMSB);
+  int voltage = this->read32_(ATM90E36_REGISTER_URMSB, ATM90E36_REGISTER_URMSBLSB);
   return (float) voltage / 100;
 }
 float ATM90E36Component::get_line_voltage_c_() {
-  int voltage = this->read16_(ATM90E36_REGISTER_URMSC);
+  int voltage = this->read32_(ATM90E36_REGISTER_URMSC, ATM90E36_REGISTER_URMSCLSB);
   return (float) voltage / 100;
 }
 float ATM90E36Component::get_line_current_a_() {
-  int current = this->read16_(ATM90E36_REGISTER_IRMSA);
+  int current = this->read32_(ATM90E36_REGISTER_IRMSA, ATM90E36_REGISTER_IRMSALSB);
   return (float) current / 1000;
 }
 float ATM90E36Component::get_line_current_b_() {
-  int current = this->read16_(ATM90E36_REGISTER_IRMSB);
+  int current = this->read32_(ATM90E36_REGISTER_IRMSB, ATM90E36_REGISTER_IRMSBLSB);
   return (float) current / 1000;
 }
 float ATM90E36Component::get_line_current_c_() {
-  int current = this->read16_(ATM90E36_REGISTER_IRMSC);
+  int current = this->read32_(ATM90E36_REGISTER_IRMSC, ATM90E36_REGISTER_IRMSCLSB);
   return (float) current / 1000;
 }
 float ATM90E36Component::get_active_power_a_() {
@@ -272,31 +272,70 @@ float ATM90E36Component::get_reactive_power_c_() {
   return val * 0.00032f;
 }
 float ATM90E36Component::get_power_factor_a_() {
-  return 0.0f;
+  int16_t pf = this->read16_(ATM90E36_REGISTER_PFMEANA);
+  return (float) pf / 1000;
 }
 float ATM90E36Component::get_power_factor_b_() {
-  return 0.0f;
+  int16_t pf = this->read16_(ATM90E36_REGISTER_PFMEANB);
+  return (float) pf / 1000;
 }
 float ATM90E36Component::get_power_factor_c_() {
-  return 0.0f;
+  int16_t pf = this->read16_(ATM90E36_REGISTER_PFMEANC);
+  return (float) pf / 1000;
 }
 float ATM90E36Component::get_forward_active_energy_a_() {
-  return 0.0f;
+  uint16_t val = this->read16_(ATM90E36_REGISTER_APENERGYA);
+  if ((UINT32_MAX - this->phase_[0].cumulative_forward_active_energy_) > val) {
+    this->phase_[0].cumulative_forward_active_energy_ += val;
+  } else {
+    this->phase_[0].cumulative_forward_active_energy_ = val;
+  }
+  return ((float) this->phase_[0].cumulative_forward_active_energy_ * 10 / 3200);
 }
 float ATM90E36Component::get_forward_active_energy_b_() {
-  return 0.0f;
+  uint16_t val = this->read16_(ATM90E36_REGISTER_APENERGYB);
+  if ((UINT32_MAX - this->phase_[1].cumulative_forward_active_energy_) > val) {
+    this->phase_[1].cumulative_forward_active_energy_ += val;
+  } else {
+    this->phase_[1].cumulative_forward_active_energy_ = val;
+  }
+  return ((float) this->phase_[1].cumulative_forward_active_energy_ * 10 / 3200);
 }
 float ATM90E36Component::get_forward_active_energy_c_() {
-  return 0.0f;
+  uint16_t val = this->read16_(ATM90E36_REGISTER_APENERGYC);
+  if ((UINT32_MAX - this->phase_[2].cumulative_forward_active_energy_) > val) {
+    this->phase_[2].cumulative_forward_active_energy_ += val;
+  } else {
+    this->phase_[2].cumulative_forward_active_energy_ = val;
+  }
+  return ((float) this->phase_[2].cumulative_forward_active_energy_ * 10 / 3200);
 }
 float ATM90E36Component::get_reverse_active_energy_a_() {
-  return 0.0f;
+  uint16_t val = this->read16_(ATM90E36_REGISTER_ANENERGYA);
+  if (UINT32_MAX - this->phase_[0].cumulative_reverse_active_energy_ > val) {
+    this->phase_[0].cumulative_reverse_active_energy_ += val;
+  } else {
+    this->phase_[0].cumulative_reverse_active_energy_ = val;
+  }
+  return ((float) this->phase_[0].cumulative_reverse_active_energy_ * 10 / 3200);
 }
 float ATM90E36Component::get_reverse_active_energy_b_() {
-  return 0.0f;
+  uint16_t val = this->read16_(ATM90E36_REGISTER_ANENERGYB);
+  if (UINT32_MAX - this->phase_[1].cumulative_reverse_active_energy_ > val) {
+    this->phase_[1].cumulative_reverse_active_energy_ += val;
+  } else {
+    this->phase_[1].cumulative_reverse_active_energy_ = val;
+  }
+  return ((float) this->phase_[1].cumulative_reverse_active_energy_ * 10 / 3200);
 }
 float ATM90E36Component::get_reverse_active_energy_c_() {
-  return 0.0f;
+  uint16_t val = this->read16_(ATM90E36_REGISTER_ANENERGYC);
+  if (UINT32_MAX - this->phase_[2].cumulative_reverse_active_energy_ > val) {
+    this->phase_[2].cumulative_reverse_active_energy_ += val;
+  } else {
+    this->phase_[2].cumulative_reverse_active_energy_ = val;
+  }
+  return ((float) this->phase_[2].cumulative_reverse_active_energy_ * 10 / 3200);
 }
 float ATM90E36Component::get_frequency_() {
   uint16_t freq = this->read16_(ATM90E36_REGISTER_FREQ);

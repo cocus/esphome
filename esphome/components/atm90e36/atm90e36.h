@@ -30,6 +30,8 @@ class ATM90E36Component : public PollingComponent,
   void set_volt_gain(int phase, uint16_t gain) { this->phase_[phase].volt_gain_ = gain; }
   void set_ct_gain(int phase, uint16_t gain) { this->phase_[phase].ct_gain_ = gain; }
 
+  void set_offset_current(int phase, uint16_t offset) { this->phase_[phase].offset_current_ = offset; }
+  void set_offset_voltage(int phase, uint16_t offset) { this->phase_[phase].offset_voltage_ = offset; }
   void set_pga_gain_voltage(int phase, uint16_t gain) { this->phase_[phase].volt_pga_gain_ = gain; }
   void set_pga_gain_current(int phase, uint16_t gain) { this->phase_[phase].current_pga_gain_ = gain; }
 
@@ -75,6 +77,8 @@ class ATM90E36Component : public PollingComponent,
     uint16_t volt_gain_{7305};
     uint16_t ct_gain_{27961};
 
+    uint16_t offset_current_{0x0};
+    uint16_t offset_voltage_{0x0};
     uint16_t volt_pga_gain_{0x0};
     uint16_t current_pga_gain_{0x0};
 

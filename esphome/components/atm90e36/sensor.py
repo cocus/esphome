@@ -41,6 +41,8 @@ CONF_VOLTAGE_PGA = "pga_volt"
 CONF_CURRENT_PHASES = "current_phases"
 CONF_GAIN_VOLTAGE = "gain_voltage"
 CONF_GAIN_CT = "gain_ct"
+CONF_OFFSET_VOLTAGE = "offset_voltage"
+CONF_OFFSET_CURRENT = "offset_current"
 LINE_FREQS = {
     "50HZ": 50,
     "60HZ": 60,
@@ -105,6 +107,8 @@ ATM90E32_PHASE_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_GAIN_VOLTAGE, default=7305): cv.uint16_t,
         cv.Optional(CONF_GAIN_CT, default=27961): cv.uint16_t,
+        cv.Optional(CONF_OFFSET_VOLTAGE, default=0): cv.uint16_t,
+        cv.Optional(CONF_OFFSET_CURRENT, default=0): cv.uint16_t,
         cv.Optional(CONF_CURRENT_PGA, default="2X"): cv.enum(PGA_GAINS, upper=True),
         cv.Optional(CONF_VOLTAGE_PGA, default="2X"): cv.enum(PGA_GAINS, upper=True),
     }
@@ -152,6 +156,8 @@ async def to_code(config):
         conf = config[phase]
         cg.add(var.set_volt_gain(i, conf[CONF_GAIN_VOLTAGE]))
         cg.add(var.set_ct_gain(i, conf[CONF_GAIN_CT]))
+        cg.add(var.set_offset_current(i, conf[CONF_OFFSET_CURRENT]))
+        cg.add(var.set_offset_voltage(i, conf[CONF_OFFSET_VOLTAGE]))
         cg.add(var.set_pga_gain_current(i, conf[CONF_CURRENT_PGA]))
         cg.add(var.set_pga_gain_voltage(i, conf[CONF_VOLTAGE_PGA]))
         if voltage_config := conf.get(CONF_VOLTAGE):

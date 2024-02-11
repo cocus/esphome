@@ -138,7 +138,14 @@ void ATM90E36Component::setup() {
   this->write16_(ATM90E36_REGISTER_IGAINB, this->phase_[1].ct_gain_);    // B line current gain
   this->write16_(ATM90E36_REGISTER_UGAINC, this->phase_[2].volt_gain_);  // C Voltage rms gain
   this->write16_(ATM90E36_REGISTER_IGAINC, this->phase_[2].ct_gain_);    // C line current gain
-  // N
+
+  this->write16_(ATM90E36_REGISTER_IOFFSETA, this->phase_[0].offset_current_);    // A line current gain
+  this->write16_(ATM90E36_REGISTER_UOFFSETA, this->phase_[0].offset_voltage_);    // A line current gain
+  this->write16_(ATM90E36_REGISTER_IOFFSETB, this->phase_[1].offset_current_);    // B line current gain
+  this->write16_(ATM90E36_REGISTER_UOFFSETB, this->phase_[1].offset_voltage_);    // B line current gain
+  this->write16_(ATM90E36_REGISTER_IOFFSETC, this->phase_[2].offset_current_);    // C line current gain
+  this->write16_(ATM90E36_REGISTER_UOFFSETC, this->phase_[2].offset_voltage_);    // C line current gain
+
   //CommEnergyIC(WRITE, IgainN, 0xFD7F); // D line current gain
   this->write16_(ATM90E36_REGISTER_CSTHREE, 0x02F6); // Checksum 3
 }

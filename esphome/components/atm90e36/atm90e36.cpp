@@ -270,28 +270,28 @@ float ATM90E36Component::get_line_current_c_() {
   return (float) current / 1000;
 }
 float ATM90E36Component::get_active_power_a_() {
-  float val = this->read32_float_(ATM90E36_REGISTER_PMEANA, ATM90E36_REGISTER_PMEANALSB);
-  return val;
+  int16_t value = this->read16_(ATM90E36_REGISTER_PMEANA);
+  return (float) value;
 }
 float ATM90E36Component::get_active_power_b_() {
-  float val = this->read32_float_(ATM90E36_REGISTER_PMEANB, ATM90E36_REGISTER_PMEANBLSB);
-  return val;
+  int16_t value = this->read16_(ATM90E36_REGISTER_PMEANB);
+  return (float) value;
 }
 float ATM90E36Component::get_active_power_c_() {
-  float val = this->read32_float_(ATM90E36_REGISTER_PMEANC, ATM90E36_REGISTER_PMEANCLSB);
-  return val;
+  int16_t value = this->read16_(ATM90E36_REGISTER_PMEANC);
+  return (float) value;
 }
 float ATM90E36Component::get_reactive_power_a_() {
-  float val = this->read32_float_(ATM90E36_REGISTER_QMEANA, ATM90E36_REGISTER_QMEANALSB);
-  return val;
+  int16_t value = this->read16_(ATM90E36_REGISTER_QMEANA);
+  return (float) value;
 }
 float ATM90E36Component::get_reactive_power_b_() {
-  float val = this->read32_float_(ATM90E36_REGISTER_QMEANB, ATM90E36_REGISTER_QMEANBLSB);
-  return val;
+  int16_t value = this->read16_(ATM90E36_REGISTER_QMEANB);
+  return (float) value;
 }
 float ATM90E36Component::get_reactive_power_c_() {
-  float val = this->read32_float_(ATM90E36_REGISTER_QMEANC, ATM90E36_REGISTER_QMEANCLSB);
-  return val;
+  int16_t value = this->read16_(ATM90E36_REGISTER_QMEANC);
+  return (float) value;
 }
 float ATM90E36Component::get_power_factor_a_() {
   int16_t pf = this->read16_(ATM90E36_REGISTER_PFMEANA);

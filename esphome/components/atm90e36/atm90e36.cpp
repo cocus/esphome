@@ -213,7 +213,7 @@ float ATM90E36Component::read32_float_(uint16_t addr_h, uint16_t addr_l, float k
   uint16_t val_l = this->read16_(addr_l);
   float result = val_l;
   result /= k;
-  result += val_h;
+  result = val_h;
 
   ESP_LOGVV(TAG,
             "read32_float_ addr_h 0x%04" PRIX16 " val_h 0x%04" PRIX16 " addr_l 0x%04" PRIX16 " val_l 0x%04" PRIX16

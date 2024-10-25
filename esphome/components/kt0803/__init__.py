@@ -447,14 +447,17 @@ SENSORS = {
 
 async def for_each_conf(config, vars, callback):
     for section in vars:
-        c = config[section] if section in config else config
+        if section is not None and section not in config:
+            continue
+        c = config[section] if section is not None else config
         for args in vars[section]:
             setter = "set_"
             if section is not None and section != CONF_SENSOR:
                 setter += section + "_"
             setter += args[0]
-            if cc := c.get(args[0]):
-                await callback(cc, args, setter)
+            if args[0] in c:
+                # print(setter + "(" + repr(c[args[0]]) + ")")
+                await callback(c[args[0]], args, setter)
 
 
 async def to_code(config):
@@ -491,10 +494,10 @@ SetFrequencyAction = kt0803_ns.class_(
 @automation.register_action(
     "kt0803.set_frequency", SetFrequencyAction, FREQUENCY_SCHEMA
 )
-async def tune_frequency_action_to_code(config, action_id, template_arg, args):
+async def set_frequency_action_to_code(config, action_id, template_arg, args):
     var = cg.new_Pvariable(action_id, template_arg)
     await cg.register_parented(var, config[CONF_ID])
-    if frequency := config.get(CONF_FREQUENCY):
-        template_ = await cg.templatable(frequency, args, cg.float_)
-        cg.add(var.set_frequency(template_))
+    frequency = config.get(CONF_FREQUENCY)
+    template_ = await cg.templatable(frequency, args, cg.float_)
+    cg.add(var.set_frequency(template_))
     return var

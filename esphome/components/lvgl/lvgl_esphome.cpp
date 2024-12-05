@@ -87,6 +87,8 @@ void LvglComponent::dump_config() {
   ESP_LOGCONFIG(TAG, "  Display width/height: %d x %d", this->disp_drv_.hor_res, this->disp_drv_.ver_res);
   ESP_LOGCONFIG(TAG, "  Rotation: %d", this->rotation);
   ESP_LOGCONFIG(TAG, "  Draw rounding: %d", (int) this->draw_rounding);
+  ESP_LOGCONFIG(TAG, "  LV_BITNESS: %d", (int) LV_BITNESS);
+  ESP_LOGCONFIG(TAG, "  LV_COLOR_DEPTH: %d", (int) LV_COLOR_DEPTH);
 }
 void LvglComponent::set_paused(bool paused, bool show_snow) {
   this->paused_ = paused;

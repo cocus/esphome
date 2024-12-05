@@ -31,8 +31,10 @@ class RpiDpiRgb : public display::Display {
 
   display::ColorOrder get_color_mode() { return this->color_mode_; }
   void set_color_mode(display::ColorOrder color_mode) { this->color_mode_ = color_mode; }
+  void set_bpp(uint16_t bpp) { this->bpp_ = bpp; }
   void set_invert_colors(bool invert_colors) { this->invert_colors_ = invert_colors; }
 
+  void set_pin_count(size_t pin_count) { this->pin_count_ = pin_count; };
   void add_data_pin(InternalGPIOPin *data_pin, size_t index) { this->data_pins_[index] = data_pin; };
   void set_de_pin(InternalGPIOPin *de_pin) { this->de_pin_ = de_pin; }
   void set_pclk_pin(InternalGPIOPin *pclk_pin) { this->pclk_pin_ = pclk_pin; }
@@ -82,6 +84,8 @@ class RpiDpiRgb : public display::Display {
   uint32_t pclk_frequency_ = 16 * 1000 * 1000;
   bool pclk_inverted_{true};
 
+  uint16_t bpp_{};
+  size_t pin_count_{};
   bool invert_colors_{};
   display::ColorOrder color_mode_{display::COLOR_ORDER_BGR};
   size_t width_{};

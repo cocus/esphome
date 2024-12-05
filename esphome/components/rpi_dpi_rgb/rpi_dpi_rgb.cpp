@@ -1,4 +1,4 @@
-#ifdef USE_ESP32_VARIANT_ESP32S3
+#if 1 //def USE_ESP32_VARIANT_ESP32S3
 #include "rpi_dpi_rgb.h"
 #include "esphome/core/log.h"
 
@@ -25,16 +25,27 @@ void RpiDpiRgb::setup() {
   config.timings.flags.pclk_active_neg = this->pclk_inverted_;
   config.timings.pclk_hz = this->pclk_frequency_;
   config.clk_src = LCD_CLK_SRC_PLL160M;
+  config.clk_src = LCD_CLK_SRC_DEFAULT;
+
   config.psram_trans_align = 64;
-  size_t data_pin_count = sizeof(this->data_pins_) / sizeof(this->data_pins_[0]);
+  size_t data_pin_count = this->pin_count_;
   for (size_t i = 0; i != data_pin_count; i++) {
     config.data_gpio_nums[i] = this->data_pins_[i]->get_pin();
   }
+#if ESP_IDF_VERSION_MAJOR >= 5
+  if (this->bpp_ != 0) {
+    config.bits_per_pixel = this->bpp_;
+  }
+#endif
   config.data_width = data_pin_count;
   config.disp_gpio_num = -1;
   config.hsync_gpio_num = this->hsync_pin_->get_pin();
   config.vsync_gpio_num = this->vsync_pin_->get_pin();
-  config.de_gpio_num = this->de_pin_->get_pin();
+  if (this->de_pin_ != nullptr) {
+    config.de_gpio_num = this->de_pin_->get_pin();
+  } else {
+    config.de_gpio_num = -1;
+  }
   config.pclk_gpio_num = this->pclk_pin_->get_pin();
   esp_err_t err = esp_lcd_new_rgb_panel(&config, &this->handle_);
   if (err != ESP_OK) {
@@ -59,7 +70,8 @@ void RpiDpiRgb::draw_pixels_at(int x_start, int y_start, int w, int h, const uin
     return;
   // if color mapping is required, pass the buck.
   // note that endianness is not considered here - it is assumed to match!
-  if (bitness != display::COLOR_BITNESS_565) {
+  if (((bitness != display::COLOR_BITNESS_888) && (this->bpp_ == 24)) ||
+      ((bitness != display::COLOR_BITNESS_565) && (this->bpp_ != 24))) {
     return display::Display::draw_pixels_at(x_start, y_start, w, h, ptr, order, bitness, big_endian, x_offset, y_offset,
                                             x_pad);
   }
@@ -124,10 +136,16 @@ void RpiDpiRgb::draw_pixel_at(int x, int y, Color color) {
       y = this->height_ - y - 1;
       break;
   }
-  auto pixel = convert_big_endian(display::ColorUtil::color_to_565(color));
 
-  this->draw_pixels_at(x, y, 1, 1, (const uint8_t *) &pixel, display::COLOR_ORDER_RGB, display::COLOR_BITNESS_565, true,
-                       0, 0, 0);
+  if (this->bpp_ == 24) {
+    const uint8_t pix3[3] = { color.red, color.green, color.blue };
+    this->draw_pixels_at(x, y, 1, 1, (const uint8_t *)pix3, display::COLOR_ORDER_RGB, display::COLOR_BITNESS_888, true,
+                        0, 0, 0);
+  } else {
+    auto pixel = convert_big_endian(display::ColorUtil::color_to_565(color));
+    this->draw_pixels_at(x, y, 1, 1, (const uint8_t *) &pixel, display::COLOR_ORDER_RGB, display::COLOR_BITNESS_565, true,
+                        0, 0, 0);
+  }
   App.feed_wdt();
 }
 
@@ -135,10 +153,17 @@ void RpiDpiRgb::dump_config() {
   ESP_LOGCONFIG("", "RPI_DPI_RGB LCD");
   ESP_LOGCONFIG(TAG, "  Height: %u", this->height_);
   ESP_LOGCONFIG(TAG, "  Width: %u", this->width_);
-  LOG_PIN("  DE Pin: ", this->de_pin_);
-  LOG_PIN("  Enable Pin: ", this->enable_pin_);
+#if ESP_IDF_VERSION_MAJOR >= 5
+  ESP_LOGCONFIG(TAG, "  BPP: %u", this->bpp_);
+#endif
+  if (this->de_pin_ != nullptr) {
+    LOG_PIN("  DE Pin: ", this->de_pin_);
+  }
+  if (this->enable_pin_ != nullptr) {
+    LOG_PIN("  Enable Pin: ", this->enable_pin_);
+  }
   LOG_PIN("  Reset Pin: ", this->reset_pin_);
-  size_t data_pin_count = sizeof(this->data_pins_) / sizeof(this->data_pins_[0]);
+  size_t data_pin_count = this->pin_count_;
   for (size_t i = 0; i != data_pin_count; i++)
     ESP_LOGCONFIG(TAG, "  Data pin %d: %s", i, (this->data_pins_[i])->dump_summary().c_str());
 }

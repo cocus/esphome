@@ -30,6 +30,8 @@ DEPENDENCIES = ["esp32"]
 CONF_DE_PIN = "de_pin"
 CONF_PCLK_PIN = "pclk_pin"
 
+CONF_BPP = "bpp"
+
 CONF_HSYNC_FRONT_PORCH = "hsync_front_porch"
 CONF_HSYNC_PULSE_WIDTH = "hsync_pulse_width"
 CONF_HSYNC_BACK_PORCH = "hsync_back_porch"
@@ -65,10 +67,10 @@ def data_pin_validate(value):
     return DATA_PIN_SCHEMA(value)
 
 
-def data_pin_set(length):
+def data_pin_set(min_length, max_length):
     return cv.All(
         [data_pin_validate],
-        cv.Length(min=length, max=length, msg=f"Exactly {length} data pins required"),
+        cv.Length(min=min_length, max=max_length, msg=f"{min_length} - {max_length} data pins required"),
     )
 
 
@@ -92,21 +94,22 @@ CONFIG_SCHEMA = cv.All(
                     cv.frequency, cv.Range(min=4e6, max=30e6)
                 ),
                 cv.Optional(CONF_PCLK_INVERTED, default=True): cv.boolean,
-                cv.Required(CONF_DATA_PINS): cv.Any(
-                    data_pin_set(16),
+                cv.Optional(CONF_DATA_PINS): cv.Any(
+                    data_pin_set(8,16),
                     cv.Schema(
                         {
-                            cv.Required(CONF_RED): data_pin_set(5),
-                            cv.Required(CONF_GREEN): data_pin_set(6),
-                            cv.Required(CONF_BLUE): data_pin_set(5),
+                            cv.Required(CONF_RED): data_pin_set(5,5),
+                            cv.Required(CONF_GREEN): data_pin_set(6,6),
+                            cv.Required(CONF_BLUE): data_pin_set(5,5),
                         }
                     ),
                 ),
                 cv.Optional(CONF_COLOR_ORDER): cv.one_of(
                     *COLOR_ORDERS.keys(), upper=True
                 ),
+                cv.Optional(CONF_BPP): cv.int_,
                 cv.Optional(CONF_INVERT_COLORS, default=False): cv.boolean,
-                cv.Required(CONF_DE_PIN): pins.internal_gpio_output_pin_schema,
+                cv.Optional(CONF_DE_PIN): pins.internal_gpio_output_pin_schema,
                 cv.Required(CONF_PCLK_PIN): pins.internal_gpio_output_pin_schema,
                 cv.Required(CONF_HSYNC_PIN): pins.internal_gpio_output_pin_schema,
                 cv.Required(CONF_VSYNC_PIN): pins.internal_gpio_output_pin_schema,
@@ -131,6 +134,7 @@ async def to_code(config):
     await display.register_display(var, config)
 
     cg.add(var.set_color_mode(COLOR_ORDERS[config[CONF_COLOR_ORDER]]))
+    cg.add(var.set_bpp(config[CONF_BPP]))
     cg.add(var.set_invert_colors(config[CONF_INVERT_COLORS]))
     cg.add(var.set_hsync_pulse_width(config[CONF_HSYNC_PULSE_WIDTH]))
     cg.add(var.set_hsync_back_porch(config[CONF_HSYNC_BACK_PORCH]))
@@ -163,6 +167,8 @@ async def to_code(config):
         cg.add(var.add_data_pin(data_pin, index))
         index += 1
 
+    cg.add(var.set_pin_count(index))
+
     if enable_pin := config.get(CONF_ENABLE_PIN):
         enable = await cg.gpio_pin_expression(enable_pin)
         cg.add(var.set_enable_pin(enable))
@@ -190,8 +196,10 @@ async def to_code(config):
         )
         cg.add(var.set_writer(lambda_))
 
-    pin = await cg.gpio_pin_expression(config[CONF_DE_PIN])
-    cg.add(var.set_de_pin(pin))
+    if de_pin := config.get(CONF_DE_PIN):
+        de = await cg.gpio_pin_expression(de_pin)
+        cg.add(var.set_de_pin(de))
+
     pin = await cg.gpio_pin_expression(config[CONF_PCLK_PIN])
     cg.add(var.set_pclk_pin(pin))
     pin = await cg.gpio_pin_expression(config[CONF_HSYNC_PIN])

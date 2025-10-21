@@ -101,7 +101,7 @@ bool KT0803Component::read_reg_(uint8_t addr) {
   }
 
   uint8_t c;
-  if (i2c::ERROR_OK == this->read_register(addr, &c, 1, false)) {
+  if (i2c::ERROR_OK == this->read_register(addr, &c, 1)) {
     this->regs_[addr] = c;
     return true;
   }

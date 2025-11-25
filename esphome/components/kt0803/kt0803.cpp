@@ -723,7 +723,7 @@ bool KT0803Component::get_slncid_binary_sensor() { return this->state_.SLNCID !=
 
 template<class S, class T> void KT0803Component::publish(S *s, T state) {
   if (s != nullptr) {
-    if (!s->has_state() || s->current_option() != state) {
+    if (!s->has_state() || s->state != state) {
       s->publish_state(state);
     }
   }
